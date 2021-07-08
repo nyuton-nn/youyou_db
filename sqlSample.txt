@@ -1,0 +1,28 @@
+CREATE TABLE T_ADDRESS (
+ ADDRESS NVARCHAR(500) NOT NULL PRIMARY KEY,
+ GROUP_ID NVARCHAR(6) NOT NULL,
+);
+
+
+INSERT INTO T_ADDRESS VALUES('神奈川県相模原市中央区相生１－１－１','000001');
+INSERT INTO T_ADDRESS VALUES('神奈川県相模原市中央区相生２－１－１','000001');
+INSERT INTO T_ADDRESS VALUES('神奈川県相模原市中央区相生４－１－１','000001');
+INSERT INTO T_ADDRESS VALUES('神奈川県相模原市中央区相生１０－１－１','000001');
+INSERT INTO T_ADDRESS VALUES('神奈川県相模原市中央区相生３０－１－１','000001');
+INSERT INTO T_ADDRESS VALUES('神奈川県相模原市中央区小山４－１－２９','000001');
+INSERT INTO T_ADDRESS VALUES('神奈川県相模原市中央区小山４－２－２９','000001');
+INSERT INTO T_ADDRESS VALUES('神奈川県相模原市中央区相模原８－３－２','000001');
+INSERT INTO T_ADDRESS VALUES('神奈川県相模原市中央区相模原８－３－１９','000001');
+INSERT INTO T_ADDRESS VALUES('秋田県相模原市中央区小山４－１－２９二三マンション','000001');
+INSERT INTO T_ADDRESS VALUES('秋田県相模原市中央区小山４－２－２９一二三マンション','000001');
+
+select * from T_ADDRESS order by address
+
+
+select t2.ADDRESS, t2.sbst1 ,t2.sbst2num, t2.sbst2 ,convert(int,TRANSLATE(left(t2.sbst2,t2.sbst2num),'０１２３４５６７８９','0123456789')) as sbst3 FROM (
+select t1.ADDRESS, t1.sbst1 ,patindex('%[^０-９]%',right(t1.ADDRESS,len(t1.ADDRESS)-len(t1.sbst1)))-1 as sbst2num,right(t1.ADDRESS,len(t1.ADDRESS)-len(t1.sbst1)) as sbst2 FROM (
+select ADDRESS,substring(ADDRESS,1,patindex('%[０-９]%',ADDRESS)-1) as sbst1 from T_ADDRESS
+) t1
+)t2 order by t2.sbst1,sbst3
+
+
