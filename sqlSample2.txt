@@ -1,0 +1,87 @@
+select
+t8.ADDRESS,
+	t8.sort11,
+	t8.sort12,
+t8.sort21,
+t8.sort22,
+t8.sort31,
+CASE 
+ WHEN t8.sbst8num > 0 THEN convert(int,TRANSLATE(left(t8.sbst8,t8.sbst8num),'０１２３４５６７８９','0123456789'))
+ ELSE convert(int,TRANSLATE(t8.sbst8,'０１２３４５６７８９','0123456789')) 
+ END sort32,
+ right(t8.sbst8,len(t8.sbst8)-t8.sbst8num) as sort4
+FROM(
+select
+t7.ADDRESS,
+patindex('%[^０-９]%',right(t7.sbst6,len(t7.sbst6)-len(t7.sbst7)))-1 as sbst8num,
+right(t7.sbst6,len(t7.sbst6)-len(t7.sbst7)) as sbst8,
+t7.sbst7 as sort31,
+t7.sort21,
+t7.sort22,
+	t7.sort11,
+	t7.sort12
+FROM(
+select 
+t6.ADDRESS,
+t6.sbst6,
+substring(t6.sbst6,1,patindex('%[０-９]%',t6.sbst6)-1) as sbst7,
+t6.sort21,
+t6.sort22,
+	t6.sort11,
+	t6.sort12
+FROM(
+select
+t5.ADDRESS,
+CASE 
+ WHEN t5.sbst5num > 0 THEN convert(int,TRANSLATE(left(t5.sbst5,t5.sbst5num),'０１２３４５６７８９','0123456789'))
+ ELSE convert(int,TRANSLATE(t5.sbst5,'０１２３４５６７８９','0123456789')) 
+ END sort22,
+right(t5.sbst5,len(t5.sbst5)-t5.sbst5num) as sbst6,
+t5.sort21,
+	t5.sort11,
+	t5.sort12
+FROM(
+select
+t4.ADDRESS,
+patindex('%[^０-９]%',right(t4.sbst3,len(t4.sbst3)-len(t4.sbst4)))-1 as sbst5num,
+right(t4.sbst3,len(t4.sbst3)-len(t4.sbst4)) as sbst5,
+t4.sbst4 as sort21,
+	t4.sort11,
+	t4.sort12
+FROM(
+select 
+t3.ADDRESS,
+t3.sbst3,
+substring(t3.sbst3,1,patindex('%[０-９]%',t3.sbst3)-1) as sbst4,
+	t3.sort11,
+	t3.sort12
+FROM(
+select 
+	t2.ADDRESS,
+	t2.sbst1 as sort11,
+CASE 
+ WHEN t2.sbst2num > 0 THEN convert(int,TRANSLATE(left(t2.sbst2,t2.sbst2num),'０１２３４５６７８９','0123456789'))
+ ELSE convert(int,TRANSLATE(t2.sbst2,'０１２３４５６７８９','0123456789')) 
+END sort12,
+	right(t2.sbst2,len(t2.sbst2)-t2.sbst2num) as sbst3
+	FROM (
+		select 
+			t1.ADDRESS,
+			t1.sbst1,
+			patindex('%[^０-９]%',right(t1.ADDRESS,len(t1.ADDRESS)-len(t1.sbst1)))-1 as sbst2num,
+			right(t1.ADDRESS,len(t1.ADDRESS)-len(t1.sbst1)) as sbst2 
+			FROM (
+				select 
+					ADDRESS,
+					substring(ADDRESS,1,patindex('%[０-９]%',ADDRESS)-1) as sbst1 
+					FROM T_ADDRESS
+			) t1
+	)t2
+)t3
+)t4 
+)t5
+)t6
+)t7
+)t8
+order by sort11,sort12,sort21,sort22,sort31,sort32,sort4
+
